@@ -128,7 +128,7 @@ namespace gd
         GODOT_CLASS(Node3D);
 
 #if GODOT_VERSION_4_4
-        PAD(0x230);
+        PAD(0x1F8);
 #elif defined GODOT_VERSION_4_3
         PAD(0x1D8);
 #endif
@@ -257,7 +257,7 @@ namespace gd
     }
 
     template <typename T>
-    LocalVector<T*>& Node::get_children()
+    inline LocalVector<T*>& Node::get_children()
     {
         return reinterpret_cast<LocalVector<T*>>(children_cache);
     }
