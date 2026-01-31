@@ -1,4 +1,4 @@
-// Godot Dumper made by NoKlyf_
+// Godot Explorer made by NoKlyf_
 // It supports versions 4.3 and 4.4
 
 /*
@@ -52,7 +52,7 @@ void WINAPI MainThread(HMODULE hModule)
     }
 
 #ifdef GODOT_VERSION_4_4
-    ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Dumper initialized! (Godot version: 4.4)" });
+    ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Explorer initialized! (Godot version: 4.4)" });
 #elif defined GODOT_VERSION_4_3
     ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Explorer initialized! (Godot version: 4.3)" });
 #endif
@@ -66,6 +66,8 @@ void WINAPI MainThread(HMODULE hModule)
 
         render->render_visuals();
         render->end_render();
+
+        Sleep(2);
     }
 
     fclose(out);

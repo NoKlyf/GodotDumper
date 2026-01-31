@@ -74,6 +74,7 @@ namespace gd
         T* as();
     };
 
+    class SceneTree;
     class Node : public Object
     {
         GODOT_CLASS(Node);
@@ -86,6 +87,7 @@ namespace gd
         LocalVector<Node*> children_cache;
         PAD(0x50);
         StringName name;
+        SceneTree* tree;
 
     public:
         Node* find_child(std::string_view path);
@@ -112,9 +114,9 @@ namespace gd
         GODOT_CLASS(Node2D);
 
 #ifdef GODOT_VERSION_4_4
-        PAD(0x304);
+        PAD(0x2FC);
 #elif defined GODOT_VERSION_4_3
-        PAD(0x2A4);
+        PAD(0x29C);
 #endif
 
     public:
@@ -126,15 +128,30 @@ namespace gd
         GODOT_CLASS(Node3D);
 
 #if GODOT_VERSION_4_4
-        PAD(0x250);
+        PAD(0x230);
 #elif defined GODOT_VERSION_4_3
-        PAD(0x1F8);
+        PAD(0x1D8);
 #endif
 
     public:
-        Vector3 global_position; // Actual position inside the world
-    private: PAD(0x30); public:
-        Vector3 position; // Position relative to the parent Node
+        Transform3D global_transform; // Actual position inside the world
+        Transform3D local_transform;
+    };
+
+    class Camera3D;
+    class Viewport : public Node
+    {
+        GODOT_CLASS(Viewport);
+
+#ifdef GODOT_VERSION_4_4
+        PAD(0x6F8);
+#elif defined GODOT_VERSION_4_3
+        PAD(0x6E8);
+#endif
+        Camera3D* camera_3d;
+
+    public:
+        Camera3D* get_camera_3d();
     };
 
     class Camera3D : public Node3D
@@ -161,8 +178,7 @@ namespace gd
         bool force_change;
         bool current;
 
-        // This should be a Viewport* but the struct doesn't contian anything useful as of now so i'm using Node*
-        Node* viewport;
+        Viewport* viewport;
 
         ProjectionType mode;
 
@@ -178,17 +194,26 @@ namespace gd
         float h_offset;
 
         KeepAspect keep_aspect;
+
+    public:
+        bool world_to_screen(const Vector3& world, Vector2& screen);
+        bool is_position_behind(const Vector3& world) const;
+
+        void look_at(const Vector3& world);
+
+    public:
+        Projection get_camera_projection();
+        Transform3D get_camera_transform();
     };
 
-    // This should inherit Viewport
-    class Window : public Node
+    class Window : public Viewport
     {
         GODOT_CLASS(Window);
 
 #ifdef GODOT_VERSION_4_4
-        PAD(0x748);
+        PAD(0x40);
 #elif defined GODOT_VERSION_4_3
-        PAD(0x738);
+        PAD(0x48);
 #endif
         String title; // The game's name
         String displayed_title; // The name displayed as the window's title

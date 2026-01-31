@@ -332,9 +332,9 @@ void render_t::render_menu()
         // TODO: Fix gd::Object::inherits_from
         if (class_name.contains("3D"))
         {
-            ImGui::InputFloat("Position X", &current_node->as<gd::Node3D>()->position.x);
-            ImGui::InputFloat("Position Y", &current_node->as<gd::Node3D>()->position.y);
-            ImGui::InputFloat("Position Z", &current_node->as<gd::Node3D>()->position.z);
+            ImGui::InputFloat("Position X", &current_node->as<gd::Node3D>()->local_transform.origin.x);
+            ImGui::InputFloat("Position Y", &current_node->as<gd::Node3D>()->local_transform.origin.y);
+            ImGui::InputFloat("Position Z", &current_node->as<gd::Node3D>()->local_transform.origin.z);
         }
         else if (class_name.contains("2D"))
         {
@@ -363,10 +363,13 @@ void render_t::render_menu()
 
 void render_t::render_visuals()
 {
-    if (gd::SceneTree::get_singleton()->get_current_scene() != last_scene && gd::SceneTree::get_singleton()->get_current_scene() != nullptr)
+    if (gd::SceneTree::get_singleton()->get_current_scene() != nullptr)
     {
-        std::string notification = std::format("Loaded new scene: {}", gd::SceneTree::get_singleton()->get_current_scene()->get_scene_file_path());
-        ImGui::InsertNotification({ ImGuiToastType_Info, 3000, notification.c_str() });
+        if (gd::SceneTree::get_singleton()->get_current_scene() != last_scene)
+        {
+            std::string notification = std::format("Loaded new scene: {}", gd::SceneTree::get_singleton()->get_current_scene()->get_scene_file_path());
+            ImGui::InsertNotification({ ImGuiToastType_Info, 3000, notification.c_str() });
+        }
     }
 
     last_scene = gd::SceneTree::get_singleton()->get_current_scene();
